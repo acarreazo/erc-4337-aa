@@ -1,7 +1,10 @@
 # ERC-4337-aa
 ERC 4337 Account abstraction
-ERC 4337 is the implementation of EIP 4337, deployed in the mainnet on 2023 on 0x0576a174D229E3cFA37253523E645A78A0C91B57. Has the following
+ERC 4337 is the implementation of EIP 4337, deployed in the mainnet on 2023 on 0x0576a174D229E3cFA37253523E645A78A0C91B57. <br>
+_`According to EIP 2938 Ethereum has two types of accounts: Externally Owned Account (EOA) and Contract Account (CA) (Smart Contract). Only EOAs can start transaction execution by paying gas.`_
 
+
+ERC 4337 give smart contract capabilities to EOA, The implementation of EIP 4337 has the following
 | Contracts | Description |
 | --- | --- |
 | EntryPoint.sol |  |
