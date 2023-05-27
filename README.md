@@ -32,6 +32,7 @@ These are the main definition for this specification
 
  Aditionally , there is a smart contract called **Paymasters** that can sponsor transactions for other users
 
+EntryPoint has struct UserOperation
 ```solidity
    struct UserOperation {
         address sender;
@@ -46,4 +47,37 @@ These are the main definition for this specification
         bytes paymasterAndData;
         bytes signature;
     }
+ ```
+ 
+`EntryPoint` receives in **handleOps** from `Bundler` bundles of userOperations, this methods validate userOperations and then execute UserOperations. In the case Agregator exists, EntryPoint run function **handleAggregatedOps**
+
+```solidity
+function handleOps(UserOperation[] calldata ops, address payable beneficiary) public {
+
+        uint256 opslen = ops.length;
+        UserOpInfo[] memory opInfos = new UserOpInfo[](opslen);
+
+    unchecked {
+        for (uint256 i = 0; i < opslen; i++) {
+            UserOpInfo memory opInfo = opInfos[i];
+            (uint256 validationData, uint256 pmValidationData) = _validatePrepayment(i, ops[i], opInfo);
+            _validateAccountAndPaymasterValidationData(i, validationData, pmValidationData, address(0));
+        }
+
+        uint256 collected = 0;
+
+        for (uint256 i = 0; i < opslen; i++) {
+            collected += _executeUserOp(i, ops[i], opInfos[i]);
+        }
+
+        _compensate(beneficiary, collected);
+    } //unchecked
+ }
+ ```
+
+When handleOps validate userOperations validate account and paymaster (if is the case), also make sure total validation doesn't exceed verificationGasLimit
+
+```solidity
+    function _validatePrepayment(uint256 opIndex, UserOperation calldata userOp, UserOpInfo memory outOpInfo)
+    private returns (uint256 validationData, uint256 paymasterValidationData) {
  ```
